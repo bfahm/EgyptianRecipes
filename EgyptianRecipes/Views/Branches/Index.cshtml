@@ -1,0 +1,135 @@
+﻿@model IEnumerable<EgyptianRecipes.ViewModels.BranchViewModel>
+
+@{
+    ViewData["Title"] = "Branches";
+}
+
+<style>
+    .pull-left{float:left!important;}
+    .pull-right{float:right!important;}
+</style>
+
+<h1>Branches</h1>
+
+<p>
+    @if (User.Identity.IsAuthenticated){
+        <a class="btn btn-primary" asp-action="Create">Create New</a>
+
+    }
+</p>
+
+<br />
+<br />
+
+@if(Model == null || Model.Count() == 0)
+{
+    <h4>Sorry, there are no branches available at the moment.</h4>
+}
+else
+{
+<table class="table" id="branches">
+    <thead>
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                Title
+            </th>
+            <th>
+                Manager Name
+            </th>
+            <th>
+                Opening Hour
+            </th>
+            <th>
+                Closing Hour
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ManagerName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OpeningHour)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ClosingHour)
+            </td>
+            <td>
+
+                @if (User.Identity.IsAuthenticated){
+                    <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.Id">Edit</a> <span>|</span>
+
+                    <button type="button" class="btn btn-danger branch-del-btn" data-branch-id="@item.Id" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                      Delete
+                    </button>
+                }else{
+                    <a class="btn btn-secondary" asp-controller="Bookings" asp-action="Create" asp-route-id="@item.Id">Book This Restaurant</a>
+                }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>    
+}
+
+<br />
+<br />
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Warning</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Proceed with deleting this record? 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+        <button type="button" class="btn btn-danger branch-del-btn-approve">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+@section Scripts {
+    <script> 
+       $(document).ready( function () {
+            let branchToBeDeleted = -1;
+            $('#branches').DataTable({
+                "pageLength": 3,
+                "bLengthChange": false,
+                "dom": '<"pull-left"f><"pull-right"l>tip'
+            });
+
+            $('.branch-del-btn').click(function (){
+                const branchId = $(this).data("branch-id");
+                branchToBeDeleted = branchId;
+            });
+
+            $('.branch-del-btn-approve').click(function (){
+                $.ajax({
+                    url: `DeleteConfirmed/${branchToBeDeleted}`,
+                    type: "POST",
+                    success: function(data) {
+                        window.location.reload();
+                    }
+                });
+            });
+        });
+   </script>
+}

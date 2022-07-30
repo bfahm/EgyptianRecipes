@@ -1,0 +1,48 @@
+﻿@model EgyptianRecipes.ViewModels.BranchViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Branch</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ManagerName" class="control-label">Manager Name</label>
+                <input asp-for="ManagerName" class="form-control" />
+                <span asp-validation-for="ManagerName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OpeningHour" class="control-label">Opening Hour</label>
+                <input type="time" step="1800" asp-for="OpeningHour" class="form-control" />
+                <span asp-validation-for="OpeningHour" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ClosingHour" class="control-label">Closing Hour</label>
+                <input type="time" step="1800" asp-for="ClosingHour" class="form-control" />
+                <span asp-validation-for="ClosingHour" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
